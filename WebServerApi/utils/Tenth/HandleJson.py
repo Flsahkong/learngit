@@ -23,7 +23,7 @@ class Handler:
 
     def computeResult(self, data, time):
         jj = dict()
-        jj["month"] = self.handle.reversehandle(time[1])
+        jj["month"] = self.handle.reversehandle(time[0])
         times = 0
         count = 0
         for i in data:

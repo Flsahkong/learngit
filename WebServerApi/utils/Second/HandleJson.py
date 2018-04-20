@@ -24,7 +24,7 @@ class Handler:
 
     def computeResult(self, data, time):
         jj = dict()
-        jj["month"] = self.handle.reversehandle(time[1])
+        jj["month"] = self.handle.reversehandle(time[0])
         peakChargeLength, valleyChargeLength, flatChargeLength = 0, 0, 0
         count1, count2, count3 = 0, 0, 0
         for i in data:

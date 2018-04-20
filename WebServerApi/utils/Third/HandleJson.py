@@ -24,7 +24,7 @@ class Handler:
 
     def computeResult(self, data, time):
         jj = dict()
-        jj["month"] = self.handle.reversehandle(time[1])
+        jj["month"] = self.handle.reversehandle(time[0])
         charge_time_each = 0
         for i in data:
             if i.charge_time_each != '-32000' and i.charge_time_each != '-32000.0':

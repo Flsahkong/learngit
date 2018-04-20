@@ -24,7 +24,7 @@ class Handler:
 
     def computeResult(self, data, time):
         jj = dict()
-        jj["month"] = self.handle.reversehandle(time[1])
+        jj["month"] = self.handle.reversehandle(time[0])
         charge_times_eachday = 0
         car_num = dict()
         for i in data:

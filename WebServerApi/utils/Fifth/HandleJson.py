@@ -23,7 +23,7 @@ class Handler:
 
     def computeResult(self, data, time):
         jj = dict()
-        jj["month"] = self.handle.reversehandle(time[1])
+        jj["month"] = self.handle.reversehandle(time[0])
         value = 0
         for i in data:
             if i.charge_ah_aver == '-32000' or i.charge_ah_aver == '-32000.0':

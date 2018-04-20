@@ -24,7 +24,7 @@ class Handler:
 
     def computeResult(self, data, time):
         jj = dict()
-        jj["month"] = self.handle.reversehandle(time[1])
+        jj["month"] = self.handle.reversehandle(time[0])
         high, low, normal = 0, 0, 0
         for i in data:
             if i.T_charge_model == '慢充':
