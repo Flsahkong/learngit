@@ -1,4 +1,4 @@
-# coding=utf-8
+﻿# coding=utf-8
 from thrift import Thrift
 from thrift.transport import TSocket
 from thrift.protocol import TMultiplexedProtocol
@@ -27,7 +27,7 @@ class scan_data_fun(object):
 
     def connectEserv(self):
         try:
-            self.tsocket = TSocket.TSocket('localhost', 6060)
+            self.tsocket = TSocket.TSocket('10.0.1.145', 6060)
             self.transport = TTransport.TFramedTransport(self.tsocket)
 
             # Wrap in a protocol
