@@ -20,17 +20,17 @@ class Handler:
     def computeResult(self, data):
         jj = dict()
         jj["dueDate"] = self.dueDate
-        jj["VNO"]=self.VNO
+        jj["VNO"] = self.VNO
         total = 0
+        num = 0
         for i in data:
-            if i.mile_all == "-32000" or i.mile_all == "-32000.0":
-                a = 0
-            else:
-                a = float(i.mile_all)
-            total += a
-        if len(data) == 0:
+            if i[0] != "-32000" and i[0] != "-32000.0":
+                a = int(i[1])
+                total += float(i[0]) * a
+                num += a
+        if num == 0:
             jj["totalMile"] = 0
         else:
-            jj["totalMile"] = total / len(data)
+            jj["totalMile"] = total / num
 
         return jj

@@ -28,14 +28,15 @@ class Handler:
         car_drive_times = 0
         car_num = dict()
         for i in data:
-            if i.drive_times_eachday != '-32000.0' and i.drive_times_eachday != '-32000':
-                car_drive_times += float(i.drive_times_eachday)
-            if car_num.has_key(i.VNO):
-                car_num[i.VNO] += 1
-            else:
-                car_num[i.VNO] = 0
-        if car_num.__len__()==0:
-            jj['value']=0
+            if i[1] != '-32000.0' and i[1] != '-32000':
+                car_drive_times += float(i[1]) * int(i[2])
+                # 跟上一个接口一样，仅当有数据的时候才进行统计这辆车
+                if car_num.has_key(i[0]):
+                    car_num[i[0]] += 1
+                else:
+                    car_num[i[0]] = 0
+        if car_num.__len__() == 0:
+            jj['value'] = 0
         else:
-            jj['value']=car_drive_times/car_num.__len__()
+            jj['value'] = car_drive_times / car_num.__len__()
         return jj

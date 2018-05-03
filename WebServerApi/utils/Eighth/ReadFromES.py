@@ -1,4 +1,4 @@
-﻿# coding=utf-8
+# coding=utf-8
 from thrift import Thrift
 from thrift.transport import TSocket
 from thrift.protocol import TMultiplexedProtocol
@@ -53,37 +53,12 @@ class scan_data_fun(object):
         if not self.constate:
             return Vehiclelist
         try:
-            query_string = "A_source:vehicle_all_drive_table AND time_end : [%s TO %s] AND VNO: %s" % (
-                                                                                starttime, endtime, VNO)
+            query_string = "A_source:vehicle_all_drive_table AND time_end : [%s TO %s] AND VNO: %s | report count(" \
+                           "A_source) on drive_times_eachday" % (starttime, endtime, VNO)
             query_model = TQueryModel(a_from=0, a_to=0,
                                       queryString=query_string)  # AND B10:>2 AND B5:>0 AND  B4:<-2.0 AND G7:<1.0
-            scan_fields = []
-            scan_fields.append("drive_times_eachday")
-            scan_model = TScanModel(scan_fields, 10000)  # 10000条记录
-            result = self.client.scanData(query_model, scan_model)  # 总数据
-            total_count = result.totalCount  # 总的数据条数
-            scan_count = 0
-            while True:
-                if result.lines:
-                    for item_fields in result.lines:
-                        batmodel = battery_original_data(item_fields['drive_times_eachday']
-
-                                                         )
-                        Vehiclelist.append(batmodel)
-                    scan_count = scan_count + result.scanCount
-                else:
-                    print "no more data"
-                    break
-
-                print scan_count, total_count  ######
-
-                if scan_count >= total_count:
-                    break
-                scroll_id = result.scrollID
-
-                scan_model = TScanModel(scan_fields, 10000, scroll_id)
-                result = self.client.scanData(query_model, scan_model)
-                # break
+            result = self.client.queryReport(query_model)
+            Vehiclelist = result.datas
         except Thrift.TException as tx:
             print tx.message
             return Vehiclelist, False

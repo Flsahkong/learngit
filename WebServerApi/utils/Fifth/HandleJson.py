@@ -26,14 +26,14 @@ class Handler:
         jj["month"] = self.handle.reversehandle(time[0])
         value = 0
         for i in data:
-            if i.charge_ah_aver == '-32000' or i.charge_ah_aver == '-32000.0':
+            if i[0] == '-32000' or i[0] == '-32000.0':
                 a = 0
             else:
-                a = float(i.charge_ah_aver)
-            if i.charge_times_eachday == '-32000' or i.charge_times_eachday == '-32000.0':
+                a = float(i[0])
+            if i[1] == '-32000' or i[1] == '-32000.0':
                 b = 0
             else:
-                b = float(i.charge_times_eachday)
-            value += a * b
+                b = float(i[1])
+            value += a * b * int(i[2])
         jj['value'] = value
         return jj

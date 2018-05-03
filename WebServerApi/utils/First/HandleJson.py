@@ -25,14 +25,73 @@ class Handler:
     def computeResult(self, data, time):
         jj = dict()
         jj["month"] = self.handle.reversehandle(time[0])
-        high, low, normal = 0, 0, 0
-        for i in data:
-            if i.T_charge_model == '慢充':
-                low += 1
-            elif i.T_charge_model == '快充':
-                high += 1
-            else:
-                normal += 1
-        jj['fastChargeNum'] = int(normal / 2) + high
-        jj['slowChargeNum'] = int(normal / 2) + low
+        normal, high, low = 0, 0, 0
+        if data.__len__() == 3:
+            if data[0][0] == "-32000" or data[0][0] == "-32000.0":
+                normal = int(data[0][1])
+                if data[1][0] == "快充":
+                    high = int(data[1][1])
+                    low = int(data[2][1])
+                else:
+                    low = int(data[1][1])
+                    high = int(data[2][1])
+                jj['fastChargeNum'] = int(normal / 2) + high
+                jj['slowChargeNum'] = normal - int(normal / 2) + low
+            elif data[0][0] == "快充":
+                high = int(data[0][1])
+                if data[1][0] == "-32000" or data[1][0] == "-32000.0":
+                    normal = int(data[1][1])
+                    low = int(data[2][1])
+                else:
+                    low = int(data[1][1])
+                    normal = int(data[2][1])
+                jj['fastChargeNum'] = int(normal / 2) + high
+                jj['slowChargeNum'] = normal - int(normal / 2) + low
+            elif data[0][0] == "慢充":
+                low = int(data[0][1])
+                if data[1][0] == "-32000" or data[1][0] == "-32000.0":
+                    normal = int(data[1][1])
+                    high = int(data[2][1])
+                else:
+                    high = int(data[1][1])
+                    normal = int(data[2][1])
+                jj['fastChargeNum'] = int(normal / 2) + high
+                jj['slowChargeNum'] = normal - int(normal / 2) + low
+        elif data.__len__() == 2:
+            if data[0][0] == "-32000" or data[0][0] == "-32000.0":
+                normal = int(data[0][0])
+                if data[1][0] == "快充":
+                    high = int(data[1][1])
+                else:
+                    low = int(data[1][1])
+                jj['fastChargeNum'] = int(normal / 2) + high
+                jj['slowChargeNum'] = normal - int(normal / 2) + low
+            elif data[0][0] == "快充":
+                high = int(data[0][1])
+                if data[1][0] == "-32000" or data[1][0] == "-32000.0":
+                    normal = int(data[1][1])
+                else:
+                    low = int(data[1][1])
+                jj['fastChargeNum'] = int(normal / 2) + high
+                jj['slowChargeNum'] = normal - int(normal / 2) + low
+            elif data[0][0] == "慢充":
+                low = int(data[0][1])
+                if data[1][0] == "-32000" or data[1][0] == "-32000.0":
+                    normal = int(data[1][1])
+                else:
+                    high = int(data[1][1])
+                jj['fastChargeNum'] = int(normal / 2) + high
+                jj['slowChargeNum'] = normal - int(normal / 2) + low
+        elif data.__len__() == 1:
+            if data[0][0] == "-32000" or data[0][0] == "-32000.0":
+                normal = int(data[0][1])
+            elif data[0][0] == "快充":
+                high = int(data[0][1])
+            elif data[0][0] == "慢充":
+                low = int(data[0][1])
+            jj['fastChargeNum'] = int(normal / 2) + high
+            jj['slowChargeNum'] = normal - int(normal / 2) + low
+        else:
+            jj['fastChargeNum'] = 0
+            jj['slowChargeNum'] = 0
         return jj

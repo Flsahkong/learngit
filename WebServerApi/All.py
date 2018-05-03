@@ -244,7 +244,7 @@ class ninth(tornado.web.RequestHandler):
 
 class tenth(tornado.web.RequestHandler):
     def get(self):
-        VNO = self.get_argument("VNO")
+        VNO = self.get_argument("vno")
         startMonth = self.get_argument("startMonth")
         endMonth = self.get_argument("endMonth")
         try:
@@ -381,7 +381,7 @@ if __name__ == "__main__":
         (r"/yjcdcs", fourth),
         (r"/cdl", fifth),
         (r"/zxslc", sixth),
-        (r"/yzxslc", seventh),
+        (r"/yzxslc", seventh),      #第七个得到的list很大，运行时间可能比较长
         (r"/yjjcs", eighth),
         (r"/yjjscs", ninth),
         (r"/bglnh", tenth),

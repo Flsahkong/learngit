@@ -30,12 +30,12 @@ class Handler:
         a = list()
         temp = dict()
         for i in data:
-            if temp.has_key("%s" % i.BatteryHealth_Range):
-                temp["%s" % i.BatteryHealth_Range] += 1
+            if temp.has_key("%s" % i[0]):
+                temp["%s" % i[0]] += int(i[1])
             else:
-                temp["%s" % i.BatteryHealth_Range] = 1
-        for key,value in temp.items():
-            a.append({"healthScoreRange":key,"vehicleNum":value})
+                temp["%s" % i[0]] = int(i[1])
+        for key, value in temp.items():
+            a.append({"healthScoreRange": key, "vehicleNum": value})
 
-        jj["range_data"]=a
+        jj["range_data"] = a
         return jj

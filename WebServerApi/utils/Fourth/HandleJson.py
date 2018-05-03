@@ -28,15 +28,15 @@ class Handler:
         charge_times_eachday = 0
         car_num = dict()
         for i in data:
-            if i.charge_times_eachday != '-32000.0' and i.charge_times_eachday != '-32000':
-                charge_times_eachday += float(i.charge_times_eachday)
-            if car_num.has_key(i.VNO):
-                car_num[i.VNO] += 1
+            if i[1] != '-32000.0' and i[1] != '-32000':
+                charge_times_eachday += float(i[1]) * int(i[2])
+            if car_num.has_key(i[0]):
+                car_num[i[0]] += 1
             else:
-                car_num[i.VNO] = 0
+                car_num[i[0]] = 1
         if car_num.__len__() == 0:
             jj['averChargeNum'] = 0
         else:
             jj['averChargeNum'] = charge_times_eachday / car_num.__len__()
-        jj['totalChargeNum']=charge_times_eachday
+        jj['totalChargeNum'] = charge_times_eachday
         return jj

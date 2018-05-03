@@ -8,9 +8,9 @@ from ESService import SearchData
 
 
 class battery_original_data(object):
-    def __init__(self, time="",B1=""):
+    def __init__(self, time="", B1=""):
         self.charge_ah_aver = time
-        self.charge_times_eachday=B1
+        self.charge_times_eachday = B1
 
 
 class CarVnoClass(object):
@@ -55,40 +55,17 @@ class scan_data_fun(object):
             return Vehiclelist
         try:
             if province == '全国':
-                query_string = "A_source:vehicle_all_charge_table AND Time : [%s TO %s]" % (startTime, endTime)
+                query_string = "A_source:vehicle_all_charge_table AND Time : [%s TO %s] | report count(A_source) on " \
+                               "charge_ah_aver,charge_times_eachday" % (startTime, endTime)
             else:
-                query_string = "A_source:vehicle_all_charge_table AND Time : [%s TO %s] AND T_vehicle_region:%s" % (
-                startTime, endTime, province)
+                query_string = "A_source:vehicle_all_charge_table AND Time : [%s TO %s] AND T_vehicle_region:%s | " \
+                               "report count(A_source) on charge_ah_aver,charge_times_eachday" % (
+                                   startTime, endTime, province)
             query_model = TQueryModel(a_from=0, a_to=0,
                                       queryString=query_string)  # AND B10:>2 AND B5:>0 AND  B4:<-2.0 AND G7:<1.0
-            scan_fields = []
-            scan_fields.append("charge_ah_aver")
-            scan_fields.append("charge_times_eachday")
-            scan_model = TScanModel(scan_fields, 10000)  # 10000条记录
-            result = self.client.scanData(query_model, scan_model)  # 总数据
-            total_count = result.totalCount  # 总的数据条数
-            scan_count = 0
-            while True:
-                if result.lines:
-                    for item_fields in result.lines:
-                        batmodel = battery_original_data(item_fields['charge_ah_aver'],
-                                                        item_fields['charge_times_eachday']
-                                                         )
-                        Vehiclelist.append(batmodel)
-                    scan_count = scan_count + result.scanCount
-                else:
-                    print "no more data"
-                    break
+            result = self.client.queryReport(query_model)
+            Vehiclelist = result.datas
 
-                print scan_count, total_count  ######
-
-                if scan_count >= total_count:
-                    break
-                scroll_id = result.scrollID
-
-                scan_model = TScanModel(scan_fields, 10000, scroll_id)
-                result = self.client.scanData(query_model, scan_model)
-                # break
         except Thrift.TException as tx:
             print tx.message
             return Vehiclelist, False
@@ -100,6 +77,6 @@ class scan_data_fun(object):
 
 if __name__ == "__main__":
     conn = scan_data_fun()
-    a, bo = conn.get_battery_data('全国', '2016-12-01', '2016-12-31')
+    a, bo = conn.get_battery_data('全国', '2017-01-01', '2017-02-01')
     for i in a:
-        print(i.charge_ah_aver,i.charge_times_eachday)
+        print(i.charge_ah_aver, i.charge_times_eachday)

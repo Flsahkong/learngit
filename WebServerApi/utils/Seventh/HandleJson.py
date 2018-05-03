@@ -29,17 +29,19 @@ class Handler:
         total_mail = 0
         car_num = dict()
         for i in data:
-            if i.energy_all != '-32000.0' and i.energy_all != '-32000' and i.mile_per_kWh != '-32000' and \
-                    i.mile_per_kWh != '-32000.0':
-                total_mail += float(i.energy_all) * float(i.mile_per_kWh)
-            if car_num.has_key(i.VNO):
-                car_num[i.VNO] += 1
-            else:
-                car_num[i.VNO] = 0
+            if i[1] != '-32000.0' and i[1] != '-32000' and i[0] != '-32000' and \
+                    i[0] != '-32000.0':
+                total_mail += float(i[1]) * float(i[0])
+                #这样子处理的话，对于没有数据的车辆，就不会进行统计它，从而保持了数据的准确性
+                if car_num.has_key(i[2]):
+                    # car_num[i.VNO] += 1
+                    pass
+                else:
+                    car_num[i[2]] = 0
 
-        jj['totalMile']=total_mail
-        if car_num.__len__()==0:
-            jj['averMile']=0
+        jj['totalMile'] = total_mail
+        if car_num.__len__() == 0:
+            jj['averMile'] = 0
         else:
-            jj['averMile']=total_mail/car_num.__len__()
+            jj['averMile'] = total_mail / car_num.__len__()
         return jj

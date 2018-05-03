@@ -1,5 +1,6 @@
 import utils.Thirteenth.ReadFromES as ReadFromES
-from utils.Thirteenth.HandleTime import HandleTime
+from utils.First.HandleTime import HandleTime
+
 
 class Handler:
     def __init__(self, province, startMonth, endMonth, vehicletype):
@@ -11,56 +12,44 @@ class Handler:
     def getDataFromServer(self):
         connect = ReadFromES.scan_data_fun()
         self.handle = HandleTime(self.startMonth, self.endMonth)
-        self.time = self.handle.hanle()
+        self.time = self.handle.handle()
 
-        Data,isTrue = connect.get_battery_data(self.province, self.vehicletype)
-        if isTrue == False:
-            return [], False
-        else:
-            return self.computeResult(Data),True
+        # Data,isTrue = connect.get_battery_data(self.province, self.vehicletype)
+        # if isTrue == False:
+        #     return [], False
+        # else:
+        #     return self.computeResult(Data),True
 
+        List = []
+        for i in self.time:
+            Data, isTrue = connect.get_battery_data(self.province, i[0], i[1], vehicletype=self.vehicletype)
+            if isTrue == False:
+                return [], False
+            List.append(self.computeResult(Data, i))
+        return List, True
 
-    def computeResult(self, Data):
+    def computeResult(self, Data, time):
+        jj = dict()
+        jj["month"] = self.handle.reversehandle(time[0])
+
         BatteryHealth_HealthScore, BatteryHealth_NowAh, BatteryHealth_ScoreConsistency = 0, 0, 0
-        size = Data.__len__()
-        if size != 0:
-            List = []
-            count = []
-            for i in self.time:
-                jj = dict()
-                jj["month"] = self.handle.reversehandle(i)
-                jj["healthScore"] = 0
-                jj["capacityScore"] = 0
-                jj["consistencyScore"] = 0
-                List.append(jj)
-                count.append(0)
+        count1, count2, count3 = 0, 0, 0
 
-            for m in Data:
-                try:
-                    index = self.time.index(m.BatteryHealth_Time)
-                    List[index]["healthScore"] += float(m.BatteryHealth_HealthScore)
-                    List[index]["capacityScore"] += float(m.BatteryHealth_ScoreAh)
-                    List[index]["consistencyScore"] += float(m.BatteryHealth_ScoreConsistency)
-                    count[index] += 1
-                except ValueError:
-                    pass
+        for i in Data:
+            if i[0] != "-32000" and i[0] != "-32000.0":
+                BatteryHealth_HealthScore += float(i[0]) * int(i[3])
+                count1 += int(i[3])
 
-            for i in range(len(self.time)):
-                try:
-                    List[i]["healthScore"] /=count[i]
-                    List[i]["capacityScore"] /= count[i]
-                    List[i]["consistencyScore"] /= count[i]
-                except ZeroDivisionError:
-                    pass
+            if i[1] != "-32000" and i[1] != "-32000.0":
+                BatteryHealth_NowAh += float(i[1]) * int(i[3])
+                count2 += int(i[3])
 
-            return List
-        else:
-            List = []
-            for num in self.time:
-                jj = dict()
-                jj["month"] = self.handle.reversehandle(num)
-                jj["healthScore"] = 0
-                jj["capacityScore"] = 0
-                jj["consistencyScore"] = 0
-                List.append(jj)
-            return List
+            if i[2] != "-32000" and i[2] != "-32000.0":
+                BatteryHealth_ScoreConsistency += float(i[2]) * int(i[3])
+                count3 += int(i[3])
+
+        jj["healthScore"] = BatteryHealth_HealthScore / count1 if count1 != 0 else 0
+        jj["capacityScore"] = BatteryHealth_NowAh / count2 if count2 != 0 else 0
+        jj["consistencyScore"] = BatteryHealth_ScoreConsistency / count3 if count3 != 0 else 0
+
+        return jj

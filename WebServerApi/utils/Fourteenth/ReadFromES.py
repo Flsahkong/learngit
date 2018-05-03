@@ -55,44 +55,21 @@ class scan_data_fun(object):
             return Vehiclelist
         try:
             if province == '全国':
-                    query_string = "A_source:BatteryHealth_Table AND BatteryHealth_Time:[%s TO %s]" % (startmonth, endmonth)
+                    query_string = "A_source:BatteryHealth_Table AND BatteryHealth_Time:[%s TO %s] " % (startmonth, endmonth)
             else:
-                query_string = "A_source:BatteryHealth_Table AND BatteryHealth_Province:%s AND BatteryHealth_Time:" \
-                               "[%s TO %s]" % (province, startmonth, endmonth)
+                query_string = "A_source:BatteryHealth_Table AND BatteryHealth_Province:%s AND BatteryHealth_Time: " \
+                               "[%s TO %s] " % (province, startmonth, endmonth)
             if vehicletype == "all":
                 query_model = TQueryModel(a_from=0, a_to=0,
-                                          queryString=query_string)
+                                          queryString=query_string+" | report count(A_source) on BatteryHealth_Range")
             else:
                 query_model = TQueryModel(a_from=0, a_to=0,
-                                          queryString=query_string + " AND BatteryHealth_VehicleType:%s" % vehicletype)
+                                          queryString=query_string + " AND BatteryHealth_VehicleType:%s | report "
+                                                                     "count(A_source) on BatteryHealth_Range"
+                                                      %vehicletype)
 
-            scan_fields = []
-            scan_fields.append("BatteryHealth_Range")
-            scan_model = TScanModel(scan_fields, 10000)  # 10000条记录
-            result = self.client.scanData(query_model, scan_model)  # 总数据
-            total_count = result.totalCount  # 总的数据条数
-            scan_count = 0
-            while True:
-                if result.lines:
-                    for item_fields in result.lines:
-                        batmodel = battery_original_data(item_fields['BatteryHealth_Range']
-
-                                                         )
-                        Vehiclelist.append(batmodel)
-                    scan_count = scan_count + result.scanCount
-                else:
-                    print "no more data"
-                    break
-
-                print scan_count, total_count  ######
-
-                if scan_count >= total_count:
-                    break
-                scroll_id = result.scrollID
-
-                scan_model = TScanModel(scan_fields, 10000, scroll_id)
-                result = self.client.scanData(query_model, scan_model)
-                # break
+            result = self.client.queryReport(query_model)
+            Vehiclelist = result.datas
         except Thrift.TException as tx:
             print tx.message
             return Vehiclelist, False

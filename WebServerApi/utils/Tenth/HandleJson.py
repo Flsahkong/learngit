@@ -27,11 +27,11 @@ class Handler:
         times = 0
         count = 0
         for i in data:
-            if i.energy_aver_100 == "-32000" or i.energy_aver_100 == "-32000.0":
+            if i[0] == "-32000" or i[0] == "-32000.0":
                 pass
             else:
-                time += float(i.drive_times_eachday)
-                count += 1
+                times += float(i[0])*int(i[1])
+                count += float(i[1])
         if count == 0:
             jj["value"] = 0
         else:

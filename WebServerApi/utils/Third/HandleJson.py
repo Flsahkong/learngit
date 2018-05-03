@@ -27,7 +27,7 @@ class Handler:
         jj["month"] = self.handle.reversehandle(time[0])
         charge_time_each = 0
         for i in data:
-            if i.charge_time_each != '-32000' and i.charge_time_each != '-32000.0':
-                charge_time_each += float(i.charge_time_each)
+            if i[0] != '-32000' and i[0] != '-32000.0':
+                charge_time_each += float(i[0])*float(i[1])
         jj['value'] = charge_time_each
         return jj

@@ -26,10 +26,10 @@ class Handler:
         jj["month"] = self.handle.reversehandle(time[0])
         times = 0
         for i in data:
-            if i.drive_times_eachday == "-32000" or i.drive_times_eachday == "-32000.0":
+            if i[0] == "-32000" or i[0] == "-32000.0":
                 pass
             else:
-                time += float(i.drive_times_eachday)
-        jj["value"]=times
+                time += float(i[0])*int(i[1])
+        jj["value"] = times
 
         return jj
