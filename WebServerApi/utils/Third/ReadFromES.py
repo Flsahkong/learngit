@@ -5,7 +5,7 @@ from thrift.protocol import TMultiplexedProtocol
 from ESmodel.ttypes import *
 from ESTypeEnum.ttypes import *
 from ESService import SearchData
-
+import Sys_cfg as addrcfg
 
 class battery_original_data(object):
     def __init__(self, time=""):
@@ -27,7 +27,7 @@ class scan_data_fun(object):
 
     def connectEserv(self):
         try:
-            self.tsocket = TSocket.TSocket('10.0.1.145', 6060)
+            self.tsocket = TSocket.TSocket(addrcfg.addr.db_host, addrcfg.addr.db_port)
             self.transport = TTransport.TFramedTransport(self.tsocket)
 
             # Wrap in a protocol
@@ -75,6 +75,8 @@ class scan_data_fun(object):
 
 
 if __name__ == "__main__":
+    addr = addrcfg.addr()
+    addr.addr_read_fun()
     conn = scan_data_fun()
     a, bo = conn.get_battery_data('鲁', '2017-01-01', '2017-02-01')
     for i in a:

@@ -104,7 +104,7 @@ class third(tornado.web.RequestHandler):
 class fourth(tornado.web.RequestHandler):
     def get(self):
         province = self.get_argument('province')
-        vehicleType = self.get_argument('vehicleType')
+        vehicleType = self.get_argument('vehicleType', 'all')
         startMonth = self.get_argument('startMonth')
         endMonth = self.get_argument('endMonth')
         try:
@@ -131,7 +131,7 @@ class fourth(tornado.web.RequestHandler):
 class fifth(tornado.web.RequestHandler):
     def get(self):
         province = self.get_argument('province')
-        vehicleType = self.get_argument('vehicleType')  # 由于vehicleType在表中没有体现，所以直接取所有的车辆类型,vehicleType不在起作用
+        vehicleType = self.get_argument('vehicleType', 'all')  # 由于vehicleType在表中没有体现，所以直接取所有的车辆类型,vehicleType不在起作用
         startMonth = self.get_argument('startMonth')
         endMonth = self.get_argument('endMonth')
         try:
